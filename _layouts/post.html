@@ -1,0 +1,19 @@
+---
+layout: default
+---
+
+	<main class="group" id="global-main" role="main">
+		<div class="archive-wrapper">
+			<section id="articles" class="post">
+				<article>
+					<div class="articlepost">
+						<header class="post-title">
+							<h3>{{ page.title }}</h3>
+							<h5>{{ page.date | date_to_string }}</h5>
+						</header>
+						{{ content }}
+					</div>
+				</article>
+			</section>
+		</div>
+	</main>

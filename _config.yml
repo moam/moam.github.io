@@ -1,2 +1,5 @@
-markdown: redcarpet
+markdown: kramdown
+exclude: ["README.md"]
 pygments: true
+paginate: 10
+production_url: http://moam.github.io

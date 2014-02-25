@@ -1,7 +1,56 @@
 ---
 layout: default
-title: Man on a Mission
+title: Man on a Mission [Index Page]
 ---
 
-	<h1>Hello World</h1>
-	<p>I'm hosted with GitHub Pages</p>
+	<main class="group" id="global-main" role="main">
+		<div class="main-wrapper">
+			<section class="archive">
+				<div class="post-header">Latest Posts</div>
+				{% for post in paginator.posts %}
+				<!-- begin archive -->
+				<article class="listview">
+					<div class="content">
+						<!--<div class="post-date-divider">Latest Posts</div>-->
+						<dl class="listitem">
+							<dt><a href="{{ post.url }}">{{ post.title }}</a></dt>
+							<dd class="archivedate">{{ post.date | date_to_string }}</dd>
+						</dl>
+					</div>
+				</article>
+				<!-- end archive -->
+				{% endfor %}
+			</section>
+			<!-- begin pagination -->
+			<!--comment out for now
+			{% if paginator.total_pages > 1 %}
+			<div class="pagination">
+				<ul>
+					{% if paginator.previous_page %}
+					<li><a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">Prev</a></li>
+					{% else %}
+					<li><span class="disabled">Prev</span></li>
+					{% endif %}
+					
+					{% for page in (1..paginator.total_pages) %}
+						{% if page == paginator.page %}
+						<li><span class="disabled">{{ page }}</span></li>
+						{% elsif page == 1 %}
+						<li><a href="{{ '/index.html' | prepend: site.baseurl | replace: '//', '/' }}">{{ page }}</a></li>
+						{% else %}
+						<li><a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a></li>
+						{% endif %}
+					{% endfor %}
+					
+					{% if paginator.next_page %}
+					<li><a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Next</a></li>
+					{% else %}
+					<li><span class="disabled">Next</span></li>
+					{% endif %}
+				</ul>
+			</div>
+			{% endif %}
+			-->
+			<!-- end pagination -->
+		</div>
+	</main>

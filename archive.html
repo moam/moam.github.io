@@ -1,0 +1,53 @@
+---
+layout: default
+title: Man on a Mission [Archive Page]
+---
+
+	{% assign posts_collate = site.posts %}
+	<main class="group" id="global-main" role="main">
+		<div class="archive-wrapper">
+			<section class="archive">
+			
+			{% include archive-year.html %}
+			
+			{% for post in posts_collate  %}
+				<!--
+				previous posts are older
+				next posts are newer
+				-->
+				{% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
+				{% capture this_month %}{{ post.date | date: "%B" }}{% endcapture %}
+				{% capture previous_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
+				{% capture previous_month %}{{ post.previous.date | date: "%B" }}{% endcapture %}
+				{% capture next_year %}{{ post.next.date | date: "%Y" }}{% endcapture %}
+				{% capture next_month %}{{ post.next.date | date: "%B" }}{% endcapture %}
+				<!-- begin archive -->
+				<article class="listview">
+					<div class="content">
+						{% if forloop.first %}
+						<div id="{{this_year}}" class="archive-month-divider">{{this_year}}</div>
+						<div class="archive-date-divider">{{this_month}}</div>
+						{% else %} 
+						{% if this_year != next_year %}
+						<div id="{{this_year}}" class="archive-month-divider">{{this_year}}</div>
+						<div class="archive-date-divider">{{this_month}}</div>
+						{% else %}  
+						{% if this_month != next_month %}
+						<div class="archive-date-divider spacer">{{this_month}}</div>
+						{% endif %}
+						{% endif %}
+						{% endif %}
+						<dl class="listitem">
+							<dt><a href="{{ post.url }}">{{ post.title }}</a></dt>
+							<dd class="archivedate">{{ post.date | date_to_string }}</dd>
+						</dl>
+					</div>
+				</article>
+				<!-- end archive -->
+			{% if forloop.last %}
+			</section>
+		</div>
+	</main>
+			{% endif %}
+			{% endfor %}
+	{% assign posts_collate = nil %}
