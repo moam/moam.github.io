@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Raspberry Pi + LAMP + FTP + SSH (Part 2)</title>
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<link rel="stylesheet" href="/css/reset.css" />
+	<link rel="stylesheet" href="/css/style.css?v=1.0" />
+	<link rel="stylesheet" href="/css/syntax.css?v=1.0" />
+	<link href='http://fonts.googleapis.com/css?family=Varela' rel='stylesheet' type='text/css'>
+	<!-- icon -->
+    <link rel="icon" type="image/x-icon" href="/image/favicon.ico" />
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]--> 
+</head>
+<body>
+	<!-- start header -->
+	<header class="group" id="global-header" role="banner">
+		<div class="wrapper">
+			<h2>Man on a Mission</h2>
+			<h4>... stuff, opinion and trivia from life's lucky dip</h4>
+		</div>
+	</header>
+	<!-- end header -->
+	<!-- begin navigation -->
+	<nav class="group" id="global-nav" role="navigation">
+		<div class="wrapper">
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="/archive.html">Archive</a></li>
+				<li><a href="/about.html">About</a></li>
+			</ul>
+		</div>
+	</nav>
+	<!-- end navigation -->
+		<main class="group" id="global-main" role="main">
+		<div class="archive-wrapper">
+			<section id="articles" class="post">
+				<article>
+					<div class="articlepost">
+						<header class="post-title">
+							<h3>Raspberry Pi + LAMP + FTP + SSH (Part 2)</h3>
+							<h5>04 Jun 2013</h5>
+						</header>
+						<p>This is part 2 of a 3 part series. <a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt1.html">Part 1</a> and 
+<a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt3.html">Part 3</a></p>
+
+<h5 id="install-and-configure-vsftp">Install and Configure VSFTP</h5>
+
+<p><kbd>sudo apt-get install vsftpd</kbd></p>
+
+<p>Open configuration file for editing <kbd>sudo vi /etc/vsftpd.conf</kbd> and amend the following lines</p>
+
+<ul>
+  <li>Change <strong>anonymous_enabled=NO</strong></li>
+  <li>Uncomment <strong>local_enable=YES</strong></li>
+  <li>Uncomment <strong>write_enable=YES</strong></li>
+  <li>Uncomment <strong>local_umask=022</strong></li>
+  <li>Uncomment and change <strong>tftpd_banner=Secure FTP server. Access strictly forbidden</strong></li>
+</ul>
+
+<p>Restart service <kbd>sudo /etc/init.d/vsftpd restart</kbd></p>
+
+<p>Test and check basic FTP is working from another PC.</p>
+
+<h5 id="install-and-configure-apache">Install and Configure Apache</h5>
+
+<p>Install Apache <kbd>sudo apt-get install apache2</kbd></p>
+
+<p>Test and check basic Web Site is working (from remote machine <em>http://ip_address_of_raspberry_pi</em>)</p>
+
+<p>Install Mod Rewrite <kbd>sudo a2enmod rewrite</kbd></p>
+
+<p>Add <strong>index.php</strong> to <em>/etc/apache2/mods-enabled/dir.conf</em> (add index.php to beginning of list) <kbd>sudo vi /etc/apache2/mods-enabled/dir.conf</kbd></p>
+
+<p><strong>Begin Optional Configure Virtual Host(s)</strong></p>
+
+<p><kbd>cd /etc/apache2/sites-available</kbd></p>
+
+<p>Copy default configuration file to one of your choice <kbd>sudo cp default hostname.of.your.site</kbd></p>
+
+<p>Edit the file you just created <kbd>sudo vi hostname.of.your.site</kbd> and amend as below (extract)</p>
+
+<div class="highlight"><pre><code class="apache"><span class="nt">&lt;VirtualHost</span> <span class="s">*:80</span><span class="nt">&gt;</span>
+	<span class="nb">ServerAdmin</span> webmaster@hostname.of.your.site
+	<span class="nb">ServerName</span> hostname.of.your.site
+	<span class="nb">ServerAlias</span> *. hostname.of.your.site
+
+	<span class="nb">DocumentRoot</span> <span class="sx">/home/your_name/public_html</span>
+	<span class="nt">&lt;Directory</span> <span class="s">/</span><span class="nt">&gt;</span>
+		<span class="nb">Options</span> FollowSymLinks
+		<span class="nb">AllowOverride</span> <span class="k">All</span>
+	<span class="nt">&lt;/Directory&gt;</span>
+	<span class="nt">&lt;Directory</span> <span class="s">/home/your_name/public_html/</span><span class="nt">&gt;</span>
+		<span class="nb">Options</span> Indexes FollowSymLinks MultiViews
+		<span class="nb">AllowOverride</span> <span class="k">All</span>
+		<span class="nb">Order</span> allow,deny
+		<span class="nb">allow</span> from <span class="k">all</span>
+	<span class="nt">&lt;/Directory&gt;</span>
+<span class="nt">&lt;/VirtualHost&gt;</span>
+
+<span class="nb">ErrorLog</span> ${APACHE_LOG_DIR}/main_error.log
+
+...
+
+<span class="nb">CustomLog</span> ${APACHE_LOG_DIR}/main_access.log common
+</code></pre></div>
+
+<p>Also change the entry in the default site to show <em>access.log common</em></p>
+
+<p>Make the file you just amended the default <kbd>sudo a2ensite hostname.of.your.site</kbd> (the opposite is <kbd>a2dissite hostname.of.your.site</kbd> 
+to disable it)</p>
+
+<p><strong>End Optional Configure Virtual Host(s)</strong></p>
+
+<p>Navigate to your home folder and create a new folder for your web documents <kbd>mkdir public_html</kbd></p>
+
+<p>Restart apache <kbd>sudo service apache2 restart</kbd></p>
+
+<h5 id="install--configure-php5">Install &amp; Configure PHP5</h5>
+
+<p>Install PHP <kbd>sudo apt-get install php5 php-pear php5-suhosin</kbd></p>
+
+<p>Install PHP libraries <kbd>sudo apt-get install php5-mysql</kbd></p>
+
+<p>Test and check basic PHP file is working by creating a file with the following content</p>
+
+<div class="highlight"><pre><code class="html+php"><span class="cp">&lt;?php</span> <span class="nb">phpinfo</span><span class="p">();</span> <span class="cp">?&gt;</span>
+</code></pre></div>
+
+<p>Save the file in the root directory of you web server which you created earlier (public_html) with the <em>.php</em> extension <strong>OR</strong> type <kbd>php -v</kbd> at the command prompt.</p>
+
+<p>Edit the configuration file <kbd>sudo vi /etc/php5/apache2/php.ini</kbd> and change the following lines to match those below</p>
+
+<ul>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>error_reporting = **E_ALL</td>
+          <td>E_STRICT**</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>error_log = <strong>/var/log/php_errors.log</strong></li>
+</ul>
+
+<p>Manually create the log file <kbd>sudo touch /var/log/php_errors.log</kbd></p>
+
+<p>Change ownership (www-data is the account APACHE runs under so I believe) <kbd>sudo chown www-data: /var/log/php_errors.log</kbd></p>
+
+<p>Change permissions <kbd>sudo chmod +rw /var/log/php_errors.log</kbd></p>
+
+<p>Restart apache <kbd>sudo service apache2 restart</kbd></p>
+
+<h5 id="install--configure-mysql-server">Install &amp; Configure MySQL Server</h5>
+
+<p>Install MySQL <kbd>sudo apt-get install mysql-server</kbd></p>
+
+<p>Edit the MySQL configuration file <kbd>sudo vi /etc/mysql/my.cnf</kbd> and change to suite the static IP you configured earlier</p>
+
+<ul>
+  <li>bind-address = 192.168.x.y (substitute your own IP here)</li>
+</ul>
+
+<p>Restart <kbd>MySQL sudo service mysql restart</kbd></p>
+
+<p>Log into MySQL (enter your password) <kbd>mysql -u root –p</kbd></p>
+
+<p>Use the mysql database (which holds the user table) <kbd>use mysql</kbd></p>
+
+<p>Create the user(s) you require (type these on the command line)</p>
+
+<ul>
+  <li>create user &#8216;your_username&#8217;@&#8217;localhost&#8217; identified by &#8216;your_password&#8217;;</li>
+  <li>grant all privileges on *.* to &#8216;your_username&#8217;@&#8217;localhost&#8217; with grant option;</li>
+  <li>create user &#8216;your_username&#8217;@&#8217;%&#8217; identified by &#8216;your_password&#8217;;</li>
+  <li>grant all privileges on *.* to &#8216;your_username&#8217;@&#8217;%&#8217; with grant option;</li>
+  <li>flush privileges;</li>
+</ul>
+
+<p>Harden the installation <kbd>mysql_secure_installation</kbd></p>
+
+<p>This is part 2 of a 3 part series. <a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt1.html">Part 1</a> and 
+<a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt3.html">Part 3</a></p>
+
+					</div>
+				</article>
+			</section>
+		</div>
+	</main>
+	<!-- start footer -->
+	<footer class="group" id="global-footer" role="contentinfo">
+		<div class="wrapper">
+			<h4>Words &amp; Pictures Copyright © 2008-2014 Steven Dobson unless otherwise stated</h4>
+			<h4>Hosted on <a href="https://github.com/" title="GitHub" >GitHub</a> assisted by <a href="http://jekyllrb.com/" title="Jekyll" >Jekyll</a></h4>
+		</div>
+	</footer>
+	<!-- end footer -->
+</body>
+</html>

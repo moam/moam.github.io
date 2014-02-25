@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Fun With Scripting</title>
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<link rel="stylesheet" href="/css/reset.css" />
+	<link rel="stylesheet" href="/css/style.css?v=1.0" />
+	<link rel="stylesheet" href="/css/syntax.css?v=1.0" />
+	<link href='http://fonts.googleapis.com/css?family=Varela' rel='stylesheet' type='text/css'>
+	<!-- icon -->
+    <link rel="icon" type="image/x-icon" href="/image/favicon.ico" />
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]--> 
+</head>
+<body>
+	<!-- start header -->
+	<header class="group" id="global-header" role="banner">
+		<div class="wrapper">
+			<h2>Man on a Mission</h2>
+			<h4>... stuff, opinion and trivia from life's lucky dip</h4>
+		</div>
+	</header>
+	<!-- end header -->
+	<!-- begin navigation -->
+	<nav class="group" id="global-nav" role="navigation">
+		<div class="wrapper">
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="/archive.html">Archive</a></li>
+				<li><a href="/about.html">About</a></li>
+			</ul>
+		</div>
+	</nav>
+	<!-- end navigation -->
+		<main class="group" id="global-main" role="main">
+		<div class="archive-wrapper">
+			<section id="articles" class="post">
+				<article>
+					<div class="articlepost">
+						<header class="post-title">
+							<h3>Fun With Scripting</h3>
+							<h5>15 Jan 2012</h5>
+						</header>
+						<h5 id="syntaxhighlighter-toolbar-toggle">SyntaxHighlighter Toolbar Toggle</h5>
+
+<p>I like the <a href="http://alexgorbatchev.com/SyntaxHighlighter/" target="_blank">SyntaxHighlighter</a> by Alex Gorbatchev but I prefer the older version with the mini toolbar. It 
+was frustrating that there seemed to be no option to hide it. However I have recently seen a couple of examples where the toolbar is revealed when a mouseover event 
+occurs. That got me very excited so I did a bit of investigation and found the solution. It wasn&#8217;t easy as the files that I needed to check were packed but I got there in 
+the end.</p>
+
+<p>The first file you need to edit is <strong>shCore.css</strong> and add in the following code</p>
+
+<div class="highlight"><pre><code class="css"><span class="lineno">1</span> <span class="nc">.syntaxhighlighter</span> <span class="nc">.bar</span>
+<span class="lineno">2</span> 	<span class="p">{</span> <span class="k">display</span><span class="o">:</span> <span class="k">none</span> <span class="cp">!important</span><span class="p">;</span> <span class="p">}</span>
+<span class="lineno">3</span> <span class="nc">.syntaxhighlighter</span> <span class="nc">.bar.show</span>
+<span class="lineno">4</span> 	<span class="p">{</span> <span class="k">display</span><span class="o">:</span> <span class="k">block</span> <span class="cp">!important</span><span class="p">;</span> <span class="p">}</span>
+</code></pre></div>
+
+<p>The next step depends on your configuration. The second file you need to edit is <strong>shCore.js</strong>. However the version in {app path}\scripts is packed and can&#8217;t be edited. 
+So I had to use the version in {app path}\src then copy it to the scripts folder (since the script entry in my php file is syntaxhighlighter/scripts/shCore.js). You need 
+to add the following code around line 1467</p>
+
+<div class="highlight"><pre><code class="js"><span class="lineno"> 1</span> <span class="nx">div</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">bar</span><span class="p">);</span> <span class="c1">// this line exists</span>
+<span class="lineno"> 2</span> <span class="kd">var</span> <span class="nx">bar</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">bar</span><span class="p">;</span>
+<span class="lineno"> 3</span> <span class="kd">function</span> <span class="nx">hide</span><span class="p">()</span>
+<span class="lineno"> 4</span> 	<span class="p">{</span>
+<span class="lineno"> 5</span> 	<span class="nx">bar</span><span class="p">.</span><span class="nx">className</span> <span class="o">=</span> <span class="nx">bar</span><span class="p">.</span><span class="nx">className</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s2">&quot;show&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="lineno"> 6</span> 	<span class="p">};</span>
+<span class="lineno"> 7</span> <span class="nx">div</span><span class="p">.</span><span class="nx">onmouseover</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span>
+<span class="lineno"> 8</span> 	<span class="p">{</span>
+<span class="lineno"> 9</span> 	<span class="nx">hide</span><span class="p">();</span>
+<span class="lineno">10</span> 	<span class="nx">bar</span><span class="p">.</span><span class="nx">className</span> <span class="o">+=</span> <span class="s2">&quot; show&quot;</span>
+<span class="lineno">11</span> 	<span class="p">};</span>
+<span class="lineno">12</span> <span class="nx">div</span><span class="p">.</span><span class="nx">onmouseout</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span>
+<span class="lineno">13</span> 	<span class="p">{</span>
+<span class="lineno">14</span> 	<span class="nx">hide</span><span class="p">()</span>
+<span class="lineno">15</span> 	<span class="p">};</span>
+</code></pre></div>
+
+<p>So there you go. The toolbar is now only shown on a mouseover event.</p>
+
+<h5 id="microsoft-command-based-script-host">Microsoft Command-Based Script Host</h5>
+
+<p>A very useful switch to &#8220;cscript.exe&#8221; = <strong>//T:nn</strong> Time out in seconds:  Maximum time a script is permitted to run.</p>
+
+<h5 id="where-has-wmic-come-from">Where has WMIC come from?</h5>
+
+<p>I&#8217;m getting excited about WMIC. I&#8217;ve been using WMI for a while now in a couple of small apps I&#8217;ve written (in Visual Basic Express) but someone sent me an email about 
+WMIC and I though &#8220;this is bloody good&#8221; so time for a few hours of investigation.</p>
+
+<h5 id="email-link-or-contact-me-form">Email Link or Contact Me Form</h5>
+
+<p>Do I need to code a &#8220;Contact Me&#8221; form? I have the basics but can&#8217;t be bothered to work on it plus no one contacts me anyway. So what&#8217;s the solution - a simple 
+&#8220;Contact Me&#8221; link. But what about SPAM? Well, use this site <a href="http://hivelogic.com/enkoder/" target="_blank">The Enkoder Form</a> to create a scrambled Javascript link to 
+your email address.</p>
+
+					</div>
+				</article>
+			</section>
+		</div>
+	</main>
+	<!-- start footer -->
+	<footer class="group" id="global-footer" role="contentinfo">
+		<div class="wrapper">
+			<h4>Words &amp; Pictures Copyright © 2008-2014 Steven Dobson unless otherwise stated</h4>
+			<h4>Hosted on <a href="https://github.com/" title="GitHub" >GitHub</a> assisted by <a href="http://jekyllrb.com/" title="Jekyll" >Jekyll</a></h4>
+		</div>
+	</footer>
+	<!-- end footer -->
+</body>
+</html>

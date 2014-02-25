@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Raspberry Pi + LAMP + FTP + SSH (Part 1)</title>
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<link rel="stylesheet" href="/css/reset.css" />
+	<link rel="stylesheet" href="/css/style.css?v=1.0" />
+	<link rel="stylesheet" href="/css/syntax.css?v=1.0" />
+	<link href='http://fonts.googleapis.com/css?family=Varela' rel='stylesheet' type='text/css'>
+	<!-- icon -->
+    <link rel="icon" type="image/x-icon" href="/image/favicon.ico" />
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]--> 
+</head>
+<body>
+	<!-- start header -->
+	<header class="group" id="global-header" role="banner">
+		<div class="wrapper">
+			<h2>Man on a Mission</h2>
+			<h4>... stuff, opinion and trivia from life's lucky dip</h4>
+		</div>
+	</header>
+	<!-- end header -->
+	<!-- begin navigation -->
+	<nav class="group" id="global-nav" role="navigation">
+		<div class="wrapper">
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="/archive.html">Archive</a></li>
+				<li><a href="/about.html">About</a></li>
+			</ul>
+		</div>
+	</nav>
+	<!-- end navigation -->
+		<main class="group" id="global-main" role="main">
+		<div class="archive-wrapper">
+			<section id="articles" class="post">
+				<article>
+					<div class="articlepost">
+						<header class="post-title">
+							<h3>Raspberry Pi + LAMP + FTP + SSH (Part 1)</h3>
+							<h5>04 Jun 2013</h5>
+						</header>
+						<p>This is part 1 of a 3 part series. <a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt2.html">Part 2</a> and 
+<a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt3.html">Part 3</a></p>
+
+<p>Right folks I thought it was about time I got my finger out and published details of how I configured my Raspberry Pi with the LAMP stack as well as 
+FTP and SSH. I&#8217;m sure this isn&#8217;t the only way to do it and other people may have their own view on how things should be done. People may even gasp in 
+horror at what I&#8217;ve done should I have missed out an important security hardening step or introduced some horrendous security flaw. If you spot any 
+howlers I would appreciate a quick word in my shell-like so I can learn where I went wrong and put it right.</p>
+
+<p>I won&#8217;t be covering any specifics about connecting the Raspberry Pi to other devices or the creation of the Operating System on the SD card.</p>
+
+<h5 id="initial-configuration">Initial Configuration</h5>
+
+<p>So you have connected your device to a monitor, you have a network connection and have input devices attached. After booting the device for the first 
+time you will be presented with a menu. My settings are listed below.</p>
+
+<ul>
+  <li>Expand root partition to fill SD card - <strong>YES</strong></li>
+  <li>Set keyboard layout - <strong>NO</strong></li>
+  <li>Change password for pi user - <strong>YES</strong></li>
+  <li>Set Locale - <strong>NO</strong></li>
+  <li>Set Timezone - <strong>NO</strong></li>
+  <li>Enable SSH server - <strong>YES</strong></li>
+  <li>Start desktop on boot - <strong>NO</strong></li>
+  <li>Try to upgrade configuration - <strong>YES</strong></li>
+</ul>
+
+<p>Follow the onscreen prompts (where applicable) to configure those items that you have enabled. After finialising the configuration the OS will boot to the 
+command prompt. </p>
+
+<h5 id="update-ip-address-to-static--check-dns-settings">Update IP address to static &amp; check DNS settings</h5>
+
+<p>To set the static IP address open the configuration file for editing <kbd>sudo vi /etc/network/interfaces</kbd></p>
+
+<p>Make sure the file contents are amended e.g.</p>
+
+<div class="highlight"><pre><code class="apache"><span class="lineno">1</span> <span class="nb">auto</span> eth0
+<span class="lineno">2</span> <span class="nb">iface</span> eth0 inet static
+<span class="lineno">3</span> 	<span class="nb">address</span> <span class="m">192</span>.168.1.x (whatever you want)
+<span class="lineno">4</span> 	<span class="nb">netmask</span> <span class="m">255.255.255.0</span>
+<span class="lineno">5</span> 	<span class="nb">gateway</span> <span class="m">192.168.1.254</span>
+<span class="lineno">6</span> 	<span class="err">dns-</span><span class="nb">nameservers</span> <span class="m">192.168.1.254</span>
+</code></pre></div>
+
+<p>Check to make sure DNS is set by opening the configuration file for editing <kbd>sudo vi /etc/resolv.conf</kbd></p>
+
+<h5 id="change-hostname">Change Hostname</h5>
+
+<p>Open up the configuration file for editing <kbd>sudo vi /etc/hostname</kbd></p>
+
+<p>Change the default of <strong>raspberrypi</strong> to one of your choosing</p>
+
+<p>Open up another configuration file for editing <kbd>sudo vi /etc/hosts</kbd></p>
+
+<p>Change the default of <strong>raspberrypi</strong> to one of your choosing</p>
+
+<p>Reboot the Raspberry Pi by typing <kbd>sudo reboot</kbd></p>
+
+<h5 id="upgrade-the-os-and-firmware">Upgrade the OS and Firmware</h5>
+
+<p>At the command prompt type <kbd>sudo apt-get update</kbd>. When this has completed type <kbd>sudo apt-get upgrade</kbd></p>
+
+<h5 id="create-a-new-user">Create A New User</h5>
+
+<p>At the command prompt type <kbd>sudo useradd –m your_user_name</kbd>. Then type <kbd>sudo passwd your_user_name</kbd> followed by the password of your choice.</p>
+
+<p>Edit a configuration file to give the new user the necessary permissions <kbd>sudo vi /etc/group</kbd></p>
+
+<p>Add the new user to the end of all the groups that &#8216;pi&#8217; is in i.e. <em>adm:x:4:pi,your_user_name</em></p>
+
+<p>Exit from the &#8216;pi&#8217; account by typing <kbd>exit</kbd> at the command prompt and test your new login</p>
+
+<h5 id="give-new-account-ability-to-sudo">Give new account ability to SUDO</h5>
+
+<p>Add standard user to configuration file (opens file in nano) <kbd>visudo</kbd></p>
+
+<p>Comment out the line <strong>pi ALL=(ALL) NOPASSWD: ALL</strong></p>
+
+<p>Add a line at the bottom <kbd>your_user_name ALL=(ALL) ALL</kbd></p>
+
+<p>Press <kbd>ctrl+X</kbd> then <kbd>Y</kbd> then the <kbd>Enter</kbd> key</p>
+
+<p>This is part 1 of a 3 part series. <a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt2.html">Part 2</a> and 
+<a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt3.html">Part 3</a></p>
+
+					</div>
+				</article>
+			</section>
+		</div>
+	</main>
+	<!-- start footer -->
+	<footer class="group" id="global-footer" role="contentinfo">
+		<div class="wrapper">
+			<h4>Words &amp; Pictures Copyright © 2008-2014 Steven Dobson unless otherwise stated</h4>
+			<h4>Hosted on <a href="https://github.com/" title="GitHub" >GitHub</a> assisted by <a href="http://jekyllrb.com/" title="Jekyll" >Jekyll</a></h4>
+		</div>
+	</footer>
+	<!-- end footer -->
+</body>
+</html>

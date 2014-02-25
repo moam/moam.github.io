@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>PC Shutdown Script</title>
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<link rel="stylesheet" href="/css/reset.css" />
+	<link rel="stylesheet" href="/css/style.css?v=1.0" />
+	<link rel="stylesheet" href="/css/syntax.css?v=1.0" />
+	<link href='http://fonts.googleapis.com/css?family=Varela' rel='stylesheet' type='text/css'>
+	<!-- icon -->
+    <link rel="icon" type="image/x-icon" href="/image/favicon.ico" />
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]--> 
+</head>
+<body>
+	<!-- start header -->
+	<header class="group" id="global-header" role="banner">
+		<div class="wrapper">
+			<h2>Man on a Mission</h2>
+			<h4>... stuff, opinion and trivia from life's lucky dip</h4>
+		</div>
+	</header>
+	<!-- end header -->
+	<!-- begin navigation -->
+	<nav class="group" id="global-nav" role="navigation">
+		<div class="wrapper">
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="/archive.html">Archive</a></li>
+				<li><a href="/about.html">About</a></li>
+			</ul>
+		</div>
+	</nav>
+	<!-- end navigation -->
+		<main class="group" id="global-main" role="main">
+		<div class="archive-wrapper">
+			<section id="articles" class="post">
+				<article>
+					<div class="articlepost">
+						<header class="post-title">
+							<h3>PC Shutdown Script</h3>
+							<h5>21 Aug 2011</h5>
+						</header>
+						<p>The task was simple enough; write a script that would enable the remote shutdown of multiple workstations. The basic script should consist of:</p>
+
+<ul>
+  <li>Read in the workstation name from a file</li>
+  <li>PING the workstation, if it replies carry on to next step, if not then move to next workstation</li>
+  <li>Send the &#8220;shutdown&#8221; command</li>
+</ul>
+
+<div class="highlight"><pre><code class="vbnet"><span class="lineno">1</span> <span class="k">Set</span> <span class="n">objShell</span> <span class="o">=</span> <span class="n">CreateObject</span><span class="p">(</span><span class="s">&quot;WScript.Shell&quot;</span><span class="p">)</span>
+<span class="lineno">2</span> <span class="k">Set</span> <span class="n">objExec</span> <span class="o">=</span> <span class="n">objShell</span><span class="p">.</span><span class="n">Exec</span><span class="p">(</span><span class="s">&quot;ping -n 1 -w 1000 &quot;</span> <span class="o">&amp;</span> <span class="n">strWSNAME</span><span class="p">)</span>
+<span class="lineno">3</span> <span class="n">strPCON</span> <span class="o">=</span> <span class="n">LCase</span><span class="p">(</span><span class="n">objExec</span><span class="p">.</span><span class="n">StdOut</span><span class="p">.</span><span class="n">ReadAll</span><span class="p">)</span>
+<span class="lineno">4</span> <span class="k">If</span> <span class="n">InStr</span><span class="p">(</span><span class="n">strPCON</span><span class="p">,</span> <span class="s">&quot;reply from&quot;</span><span class="p">)</span> <span class="k">Then</span> <span class="p">...</span>
+<span class="lineno">5</span> 	<span class="n">Shut</span> <span class="n">the</span> <span class="n">machine</span> <span class="n">down</span> <span class="p">(</span><span class="n">see</span> <span class="n">below</span> <span class="k">for</span> <span class="n">the</span> <span class="n">code</span><span class="p">)</span>
+<span class="lineno">6</span> <span class="k">Else</span> <span class="p">...</span>
+<span class="lineno">7</span> 	<span class="n">The</span> <span class="n">machine</span> <span class="ow">is</span> <span class="n">switched</span> <span class="n">off</span> <span class="p">(</span><span class="ow">or</span> <span class="n">at</span> <span class="n">least</span> <span class="n">no</span> <span class="n">reply</span> <span class="n">was</span> <span class="n">received</span><span class="p">)</span>
+<span class="lineno">8</span> <span class="k">End</span> <span class="k">If</span>
+</code></pre></div>
+
+<p>Here we can see that the script sets up the shell object, then we issue the PING command against the workstation. Next we capture the output (StdOut.ReadAll) 
+into a variable and check what it says. If it says &#8220;reply from&#8221; then we assume that it replied and we can shut it down. Anything else we assume it&#8217;s switched off 
+and move onto the next workstation.</p>
+
+<div class="highlight"><pre><code class="vbnet"><span class="lineno">1</span> <span class="k">Set</span> <span class="n">objExec</span> <span class="o">=</span> <span class="n">objShell</span><span class="p">.</span><span class="n">Exec</span><span class="p">(</span><span class="s">&quot;shutdown -m \\&quot;</span> <span class="o">&amp;</span> <span class="n">strWSNAME</span> <span class="o">&amp;</span> <span class="s">&quot; -s -f -t 60&quot;</span><span class="p">)</span>
+<span class="lineno">2</span> <span class="n">strSHUTDOWNMESSAGE</span> <span class="o">=</span> <span class="n">LCase</span><span class="p">(</span><span class="n">objExec</span><span class="p">.</span><span class="n">StdOut</span><span class="p">.</span><span class="n">ReadAll</span><span class="p">)</span>
+<span class="lineno">3</span> <span class="n">strSHUTDOWNERROR</span> <span class="o">=</span> <span class="n">LCase</span><span class="p">(</span><span class="n">objExec</span><span class="p">.</span><span class="n">StdErr</span><span class="p">.</span><span class="n">ReadAll</span><span class="p">)</span>
+<span class="lineno">4</span> <span class="k">If</span> <span class="n">Len</span><span class="p">(</span><span class="n">strSHUTDOWNMESSAGE</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>  <span class="ow">Or</span> <span class="n">Len</span><span class="p">(</span><span class="n">strSHUTDOWNERROR</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">Then</span> <span class="p">...</span>
+<span class="lineno">5</span> 	<span class="n">The</span> <span class="n">was</span> <span class="n">an</span> <span class="k">error</span> <span class="p">(</span><span class="ow">or</span> <span class="n">informative</span> <span class="n">message</span><span class="p">)</span> <span class="ow">and</span> <span class="n">it</span> <span class="n">failed</span>
+<span class="lineno">6</span> <span class="k">Else</span> <span class="p">...</span>
+<span class="lineno">7</span> 	<span class="n">The</span> <span class="n">request</span> <span class="n">was</span> <span class="n">sent</span>
+<span class="lineno">8</span> <span class="k">End</span> <span class="k">If</span>
+</code></pre></div>
+
+<p>We issue the SHUTDOWN command against the workstation. Next we capture the output (StdOut.ReadAll &amp; StdErr.ReadAll) into variables and check what they say. The 
+command has no success output so if these variables are blank then we assume the command has been sent successfully and has worked. Otherwise there was a 
+problem and it failed.</p>
+
+<p>Alternatively if you&#8217;d like to warn an end user (should there be a possibility that they&#8217;ll still be logged in) that their workstation is about to be shutdown 
+you could use this version. It relies on you either training the end user to issue the cancellation command (shutdown -a) or adding a shortcut (to a batch file 
+with the same command) on the user&#8217;s desktop.</p>
+
+<div class="highlight"><pre><code class="vbnet"><span class="lineno">1</span> <span class="k">Set</span> <span class="n">objExec</span> <span class="o">=</span> <span class="n">objShell</span><span class="p">.</span><span class="n">Exec</span><span class="p">(</span><span class="s">&quot;shutdown -m \\&quot;</span> <span class="o">&amp;</span> <span class="n">strWSNAME</span> <span class="o">&amp;</span> <span class="s">&quot; -s -f -t 60 -c &quot;&quot;Warning! This machine will now be shutdown. You can cancel this by using the shortcut on your desktop&quot;&quot;&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<p>The only 2 errors I have seen output are</p>
+
+<ul>
+  <li>Access Denied - I believe this is due to the account running the script not having the necessary privileges to issue the command on the workstation but this 
+is not confirmed</li>
+  <li>Network Path Not Found - I believe that this is due to file and print sharing not being enabled on the target workstation but once again this is not 
+confirmed</li>
+</ul>
+
+<p>Because there is no success output from the &#8220;shutdown command&#8221; you may have to carry out further activities to check that it has actually worked. Some solutions 
+I have seen run a second script to PING all workstations once again but this isn&#8217;t a requirement for my script so I haven&#8217;t implemented it.</p>
+
+<p>To finish off here are a couple of links to help you out.</p>
+
+<ul>
+  <li><a href="http://www.microsoft.com/resources/documentation/windows/xp/all/proddocs/en-us/shutdown.mspx?mfr=true" target="_blank">Shutdown Command Reference</a></li>
+  <li><a href="/docs/autoshutdown.txt" target="_blank">The Script</a> (to avoid any security 
+issues etc. I have saved it as a .txt file. Please change extension to .vbs for correct usage).</li>
+</ul>
+
+					</div>
+				</article>
+			</section>
+		</div>
+	</main>
+	<!-- start footer -->
+	<footer class="group" id="global-footer" role="contentinfo">
+		<div class="wrapper">
+			<h4>Words &amp; Pictures Copyright © 2008-2014 Steven Dobson unless otherwise stated</h4>
+			<h4>Hosted on <a href="https://github.com/" title="GitHub" >GitHub</a> assisted by <a href="http://jekyllrb.com/" title="Jekyll" >Jekyll</a></h4>
+		</div>
+	</footer>
+	<!-- end footer -->
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Raspberry Pi + LAMP + FTP + SSH (Part 3)</title>
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<link rel="stylesheet" href="/css/reset.css" />
+	<link rel="stylesheet" href="/css/style.css?v=1.0" />
+	<link rel="stylesheet" href="/css/syntax.css?v=1.0" />
+	<link href='http://fonts.googleapis.com/css?family=Varela' rel='stylesheet' type='text/css'>
+	<!-- icon -->
+    <link rel="icon" type="image/x-icon" href="/image/favicon.ico" />
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]--> 
+</head>
+<body>
+	<!-- start header -->
+	<header class="group" id="global-header" role="banner">
+		<div class="wrapper">
+			<h2>Man on a Mission</h2>
+			<h4>... stuff, opinion and trivia from life's lucky dip</h4>
+		</div>
+	</header>
+	<!-- end header -->
+	<!-- begin navigation -->
+	<nav class="group" id="global-nav" role="navigation">
+		<div class="wrapper">
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="/archive.html">Archive</a></li>
+				<li><a href="/about.html">About</a></li>
+			</ul>
+		</div>
+	</nav>
+	<!-- end navigation -->
+		<main class="group" id="global-main" role="main">
+		<div class="archive-wrapper">
+			<section id="articles" class="post">
+				<article>
+					<div class="articlepost">
+						<header class="post-title">
+							<h3>Raspberry Pi + LAMP + FTP + SSH (Part 3)</h3>
+							<h5>04 Jun 2013</h5>
+						</header>
+						<p>This is part 3 of a 3 part series. <a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt1.html">Part 1</a> and 
+<a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt2.html">Part 2</a></p>
+
+<h5 id="configure-phpmyadmin-for-remote-access">Configure phpMyAdmin for Remote Access</h5>
+
+<p>For the purposes of this excercise I downloaded &amp; installed it on Windows PC (you’ll need to be running some sort of web server for it to work – doh!)</p>
+
+<p>Open <em>config.inc.php</em> (the phpMyAdmin configuration file) in your favourite text editor</p>
+
+<p>Add the following (below the First Server settings for localhost) making sure you get the domain correct</p>
+
+<div class="highlight"><pre><code class="apache"><span class="err">/*</span>
+ <span class="err">*</span> <span class="nb">Second</span> server
+ <span class="err">*/</span>
+<span class="err">$i++;</span>
+<span class="err">/*</span> <span class="nb">Authentication</span> type */
+<span class="err">$cfg[&#39;Servers&#39;][$i][&#39;auth_type&#39;]</span> <span class="err">=</span> <span class="err">&#39;cookie&#39;;</span>
+<span class="err">/*</span> <span class="nb">Server</span> parameters */
+<span class="err">$cfg[&#39;Servers&#39;][$i][&#39;host&#39;]</span> <span class="err">=</span> <span class="err">&#39;your</span>.<span class="err">domain</span>.<span class="err">name&#39;;</span>
+<span class="err">$cfg[&#39;Servers&#39;][$i][&#39;connect_type&#39;]</span> <span class="err">=</span> <span class="err">&#39;tcp&#39;;</span>
+<span class="err">$cfg[&#39;Servers&#39;][$i][&#39;compress&#39;]</span> <span class="err">=</span> <span class="err">false;</span>
+<span class="err">/*</span> <span class="nb">Select</span> mysql if your server does not have mysqli */
+<span class="err">$cfg[&#39;Servers&#39;][$i][&#39;extension&#39;]</span> <span class="err">=</span> <span class="err">&#39;mysqli&#39;;</span>
+<span class="err">$cfg[&#39;Servers&#39;][$i][&#39;AllowNoPassword&#39;]</span> <span class="err">=</span> <span class="err">false;</span>
+</code></pre></div>
+
+<p>Save the file</p>
+
+<p>When you start phpMyAdmin you should have a drop down box where you can select the server instance</p>
+
+<h5 id="harden-ssh-part-1">Harden SSH Part 1</h5>
+
+<p>Open up the configuration file for editing <kbd>sudo vi /etc/ssh/sshd_config</kbd> and change the following</p>
+
+<ul>
+  <li>Set <strong>PermitRootLogin no</strong></li>
+  <li>Add (at bottom of file) <strong>AllowUsers your_user_name</strong></li>
+  <li>Uncomment <strong>Banner /etc/issue.net</strong> (assuming you need a banner)</li>
+</ul>
+
+<p>Create banner file <kbd>sudo vi /etc/issue.net</kbd> and add in whatever text you want to display when you telnet into your server</p>
+
+<p>Restart ssh service <kbd>sudo service ssh restart</kbd></p>
+
+<p>Test and check basic SSH working e.g.</p>
+
+<ul>
+  <li>Download &amp; install PuTTY (for the purposes of this excercise) to your Windows PC</li>
+  <li>Set Host Name or IP Address</li>
+  <li>Leave port = 22</li>
+  <li>Give the session a name &amp; save it</li>
+  <li>Load the session &amp; click Open</li>
+  <li>Login with your username &amp; password (assuming you get that option !)</li>
+</ul>
+
+<h5 id="harden-ssh-part-2-putty--public--private-keys">Harden SSH Part 2 (PuTTY &amp; Public / Private Keys)</h5>
+
+<p>Open PuTTYgen which will be used to create the public &amp; private keys</p>
+
+<p>Generate a key</p>
+
+<p>Add a Key Phrase (i.e. SomeSortOfPassword)</p>
+
+<p>Save the Public &amp; Private Keys</p>
+
+<p>Open PuTTY and login using the name &amp; password method</p>
+
+<p>Create a new directory <kbd>mkdir /home/your_user_name/.ssh</kbd>
+Create a new file in that directory <kbd>vi /home/your_user_name/.ssh/authorized_keys</kbd> (this will open a new blank file)</p>
+
+<p>Flip back to PuTTYgen and copy the contents of the Public Key (EXCLUDING the last space + rsa-key-YYYYMMDD)</p>
+
+<div class="highlight"><pre><code class="apache"><span class="err">ssh-</span><span class="nb">rsa</span> ABC123... blah blah ...321CBA== rsa-key-19000101
+</code></pre></div>
+
+<p>Flip back to PuTTY and right click in the vi screen – this will paste the contents of the key into that file</p>
+
+<p>Make sure the text is in one continuous line and scroll to the end. Using the append key <kbd>[a]</kbd> add a space + username@hostname 
+(i.e. your_user_name@server_name)</p>
+
+<div class="highlight"><pre><code class="apache"><span class="err">ssh-</span><span class="nb">rsa</span> ABC123... blah blah ...321CBA== your_user_name@server_name
+</code></pre></div>
+
+<p>Save the file <kbd>[:wq]</kbd> – re-open it to double check it&#8217;s saved OK</p>
+
+<p>Amend the permissions to the .ssh folder and authorized_keys file</p>
+
+<ul>
+  <li><kbd>chmod 700 /home/your_user_name/.ssh</kbd></li>
+  <li><kbd>chmod 600 /home/your_user_name/.ssh/authorized_keys</kbd></li>
+</ul>
+
+<p>Open another PuTTY session and load up the session you want. Carry out the following actions</p>
+
+<ul>
+  <li>Select from the options <em>Connection -&gt; Data -&gt; Auto-login Username</em> and add your username</li>
+  <li>Select from the options <em>Connection -&gt; SSH -&gt; Auth</em> and browse for the private key file you created earlier</li>
+  <li>Select from the options <em>Session -&gt; Save</em></li>
+  <li><em>Open</em> (to launch) then you should get prompted for your passphrase</li>
+</ul>
+
+<h5 id="extras">Extras</h5>
+
+<p><strong>Disable &#8216;default&#8217; site</strong> - If you enter the IP address of the Raspberry Pi (server) in a browser then you’ll get the default site page 
+(located in /var/www). To prevent this from happening (so that jokers from the internet who just enter your external IP address won&#8217;t be able to 
+display it either) then enter the following command <kbd>sudo a2dissite default</kbd></p>
+
+<p>The restart apache <kbd>sudo service apache2 restart</kbd></p>
+
+<p>In fact (even better) I believe that it will display the site which appears first in your list of virtual servers (alphabetically) which in this case 
+is the only one I have. If you have more than one it will pick the first (alphabetically).</p>
+
+<p>To re-enable the default site <kbd>cd /etc/apache2/sites-available</kbd> (may not be required) then <kbd>sudo a2ensite default</kbd></p>
+
+<p><strong>Apache Hardening</strong> - Edit <em>/etc/apache2/conf.d/security</em> and add or amend the following</p>
+
+<ul>
+  <li><em>ServerSignature Off</em></li>
+  <li><em>ServerTokens Prod</em></li>
+  <li><em>TraceEnable Off</em></li>
+</ul>
+
+<p>Apache Signature or Apache Banner is basically the same thing. It is an application name together with version name that is printed when performing a 
+web request. Nobody actually needs this information at all, but it is enabled by default.</p>
+
+<p>HTTP TRACE request is used to echo back all received information. It can be tricked to print HTTP cookies and as a result steal HTTP session. 
+Basically this request can be used as part of the Cross Site Scripting attack, or XSS. It is recommended to disable it as a security precaution.</p>
+
+<p><strong>Apache Logging Updates</strong> - In the <em>apache2.conf</em> file make the following changes (if you like, saves logging loads of stuff you may never need)</p>
+
+<div class="highlight"><pre><code class="apache"><span class="err">/*</span> <span class="nb">Under</span> <span class="s2">&quot;*Include ports.conf*&quot;</span> */
+<span class="c"># Mark requests for resource files - (files with these extensions don&#39;t get logged)</span>
+<span class="nb">SetEnvIf</span> Request_URI <span class="s2">&quot;.(ico|jpg|png|gif|js|css|txt|woff|ttf|svg|eot?|swf)$&quot;</span> dontlog
+
+<span class="c"># Mark requests from the loop-back address - (don&#39;t log traffic from loop-back adapter)</span>
+<span class="nb">SetEnvIf</span> Remote_Addr <span class="s2">&quot;^127&quot;</span> dontlog
+<span class="c"># Mark requests from local lan - (don&#39;t log traffic from local lan)</span>
+<span class="nb">SetEnvIf</span> Remote_Addr <span class="s2">&quot;^192&quot;</span> dontlog
+
+<span class="nb">Change</span> the <span class="s2">&quot;common&quot;</span> log format - (removes <span class="k">any</span> unnecessary <span class="k">info</span>)
+<span class="nb">LogFormat</span> <span class="s2">&quot;%h %t \&quot;%r\&quot; %&gt;s %O&quot;</span> common
+</code></pre></div>
+
+<p>In the &#8220;<em>your.domain.name</em>&#8221; &amp; &#8220;<em>default</em>&#8221; sites-available files alter the last line to (respectively)</p>
+
+<ul>
+  <li>CustomLog ${APACHE_LOG_DIR}/access.log common env=!dontlog</li>
+  <li>CustomLog ${APACHE_LOG_DIR}/main_access.log common env=!dontlog</li>
+</ul>
+
+<p>Restart apache <kbd>sudo service apache2 restart</kbd></p>
+
+<p><strong>Apache Default Site Files</strong> - Amend permissions to <em>/var/www</em> directory (so you can managed the files)</p>
+
+<ul>
+  <li><kbd>sudo chmod o+w /var/www</kbd></li>
+  <li><kbd>sudo chmod g+w /var/www</kbd></li>
+</ul>
+
+<p>Remove default <em>index.html</em> <kbd>cd /var/www</kbd> then <kbd>sudo rm index.html</kbd></p>
+
+<p>FTP new files into place (assuming you want to, you may want to display something instead of a blank or not found page)</p>
+
+<p>Congratulations you should now have a fully working LAMP server with remote SSH access. Couple this with a Dynamic DNS Host and you&#8217;ll be able to access 
+it from anywhere. With lower power consumption and (so far) great reliability it should stay trouble free for a long time.</p>
+
+<p>This is part 3 of a 3 part series. <a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt1.html">Part 1</a> and 
+<a href="http://moam.github.io/2013/06/04/raspberry-pi-lamp-pt2.html">Part 2</a></p>
+
+					</div>
+				</article>
+			</section>
+		</div>
+	</main>
+	<!-- start footer -->
+	<footer class="group" id="global-footer" role="contentinfo">
+		<div class="wrapper">
+			<h4>Words &amp; Pictures Copyright © 2008-2014 Steven Dobson unless otherwise stated</h4>
+			<h4>Hosted on <a href="https://github.com/" title="GitHub" >GitHub</a> assisted by <a href="http://jekyllrb.com/" title="Jekyll" >Jekyll</a></h4>
+		</div>
+	</footer>
+	<!-- end footer -->
+</body>
+</html>
