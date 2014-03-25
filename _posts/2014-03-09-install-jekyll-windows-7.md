@@ -37,7 +37,7 @@ So let's begin ...
 At the time of writing a default install will give you version 1.4.3 of Jekyll however Windows 7 Pro doesn't seem to like that version so we need to drop back to version 1.4.2.
 
 * Open a command prompt window and type in the following
-	* <kbd>gem --version</kbd> (optional to verify that gem has been installed properly)
+	* <kbd>gem -\-version</kbd> (optional to verify that gem has been installed properly)
 	* <kbd>gem install jekyll -\-version "=1.4.2"</kbd>
 
 ##### Update Ruby Pygments Gem
