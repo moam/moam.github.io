@@ -115,6 +115,10 @@ article { margin:0; padding:0;  }
 #archive-years ul li a:visited { color:#333; border-bottom:0; }
 #archive-years ul li a:hover, #archive-years ul li a:active, #archive-years ul li a:focus { color:#000; border-bottom:3px solid #0088cc; }
 
+table { max-width:100%; background-color:transparent; margin-bottom:20px; }
+th { text-align:left; padding:4px; border:1px solid #EFEFEF; background:#FAFAFA; }
+td { margin:0; padding:4px; border:1px solid #EFEFEF; }
+
 .footnotes ol { list-style: none; padding:10px 0 0 0; border-top:1px solid #efefef; }
 kbd, tt, var { padding:0 4px; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; color:#ff0000; background-color:#fafafa; border:1px solid #e0e0e0; }
 .com {color: #93a1a1;}
