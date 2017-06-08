@@ -10,13 +10,13 @@ Hi, I'm Steven. Welcome to my site - a place for my stuff, opinions and trivia. 
 * I am not a web designer, front-end developer, illustrator or a freelancer.
 * I am not a part time or professional musician. I can't even play an instrument.
 * I don't like coffee or any other caffeinated beverage and have never been to Starbucks.
-* Twitter and Facebook are a load of shite and totally pointless.
+* ~~Twitter and~~ Facebook ~~are~~ is a load of shite and totally pointless. Hey I'm allowed to change my opinion you know.
 * I am not an ex-Navy Seal and have no experience of weapons and tactics.
 
 There, that's covered most of the cliches.
 
 I live in beautiful Northumberland on the North East coast of England. When I'm not working, which is a major inconvenience, I love to go on long
-walks with my family and dog, who's called Molly, in the coast and countryside of Northumberland. I also enjoy music, bird watching, intelligent TV and 
+walks ~~with my family and dog, who's called Molly,~~ along the coast and in the countryside of Northumberland. I also enjoy music, bird watching, intelligent TV and 
 reading.
 
 ##### The History
