@@ -2,10 +2,5 @@ markdown: kramdown
 exclude: ["README.md"]
 highlighter: rouge
 production_url: http://moam.github.io
-# gems
-gems: [jekyll-paginate-v2]
-# pagination settings
-pagination:
-  enabled: true
-  per_page: 10
-  sort_reverse: true
+gems: [jekyll-paginate]
+paginate: 10
